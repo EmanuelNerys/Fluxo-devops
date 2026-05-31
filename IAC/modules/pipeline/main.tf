@@ -99,6 +99,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   # ETAPA 2: BUILD (Chama o CodeBuild para rodar o Docker)
+# ETAPA 2: BUILD (Chama o CodeBuild para rodar o Docker)
   stage {
     name = "Build"
     action {
@@ -110,7 +111,8 @@ resource "aws_codepipeline" "pipeline" {
       output_artifacts = ["build_output"]
       version          = "1"
 
-      configuration = { project_name = aws_codebuild_project.build.name }
+      # A CORREÇÃO ESTÁ AQUI: ProjectName com P e N maiúsculos
+      configuration = { ProjectName = aws_codebuild_project.build.name } 
     }
   }
 

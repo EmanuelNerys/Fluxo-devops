@@ -5,12 +5,17 @@ resource "aws_s3_bucket" "terraform_state" {
 }
 
 # 2. CHAMA O MÓDULO DE REDE (Sua VPC e Subnets)
+# CHAMA O MÓDULO DE REDE
 module "minha_rede" {
   source     = "./modules/networking"
   sg_name    = "ecs-hello-world-sg"
   app_port   = 3000
-  vpc_id     = "vpc-0d1add80f2e752f9a"
-  subnet_ids = ["subnet-07c6561be5d68b16b", "subnet-01e154689c68b933e"]
+  
+  vpc_id     = "vpc-0d1add80f2e752f9a" 
+  subnet_ids = [
+    "subnet-0768b5c313829fa33", 
+    "subnet-06e8d7eda0cb8323f"
+  ]
 }
 
 # 3. CHAMA O MÓDULO DO ECR
@@ -35,7 +40,7 @@ module "meu_pipeline" {
   
   # Dados do seu repositório no GitHub
   repo_id             = "EmanuelNerys/Fluxo-devops"
-  repo_branch         = "master"
+  repo_branch         = "main"
   
   # Conecta dinamicamente com as saídas dos outros módulos!
   ecr_repository_name = "hello-world-app"
