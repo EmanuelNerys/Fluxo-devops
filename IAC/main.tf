@@ -33,17 +33,15 @@ module "meu_ecs" {
   security_group_id = module.minha_rede.security_group_id
 }
 
-# 5. NOVO: CHAMA O MÓDULO DO CODEPIPELINE/CODEBUILD
+# 5. CHAMA O MÓDULO DO CODEPIPELINE/CODEBUILD
 module "meu_pipeline" {
   source              = "./modules/pipeline"
   pipeline_name       = "hello-world-pipeline"
   
-  # Dados do seu repositório no GitHub
   repo_id             = "EmanuelNerys/Fluxo-devops"
   repo_branch         = "main"
   
-  # Conecta dinamicamente com as saídas dos outros módulos!
   ecr_repository_name = "hello-world-app"
   ecs_cluster_name    = module.meu_ecs.cluster_name
   ecs_service_name    = module.meu_ecs.service_name
-}
+} 

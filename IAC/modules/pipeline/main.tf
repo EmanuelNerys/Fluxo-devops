@@ -23,7 +23,19 @@ resource "aws_iam_role_policy" "pipeline_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      { Effect = "Allow", Action = ["s3:*", "ecr:*", "ecs:*", "iam:PassRole", "codebuild:*", "codestar-connections:*"], Resource = "*" }
+      { 
+        Effect = "Allow"
+        Action = [
+          "s3:*", 
+          "ecr:*", 
+          "ecs:*", 
+          "iam:PassRole", 
+          "codebuild:*", 
+          "codestar-connections:*",
+          "logs:*" # <-- CORREÇÃO: Permissão adicionada para o CodeBuild conseguir criar logs no CloudWatch
+        ]
+        Resource = "*" 
+      }
     ]
   })
 }
@@ -35,7 +47,7 @@ resource "aws_codebuild_project" "build" {
 
   artifacts { type = "CODEPIPELINE" }
 
- environment {
+  environment {
     compute_type    = "BUILD_GENERAL1_SMALL"
     image           = "aws/codebuild/standard:7.0"
     type            = "LINUX_CONTAINER"
@@ -99,7 +111,6 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   # ETAPA 2: BUILD (Chama o CodeBuild para rodar o Docker)
-# ETAPA 2: BUILD (Chama o CodeBuild para rodar o Docker)
   stage {
     name = "Build"
     action {
@@ -111,7 +122,6 @@ resource "aws_codepipeline" "pipeline" {
       output_artifacts = ["build_output"]
       version          = "1"
 
-      # A CORREÇÃO ESTÁ AQUI: ProjectName com P e N maiúsculos
       configuration = { ProjectName = aws_codebuild_project.build.name } 
     }
   }
