@@ -11,7 +11,8 @@ phases:
   build:
     commands:
       - echo "Construindo a imagem Docker..."
-      - docker build -t $REPOSITORY_URI:latest .
+      # APONTAMOS O DOCKER PARA A PASTA BACKEND AQUI:
+      - docker build -t $REPOSITORY_URI:latest ./backend
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
@@ -19,7 +20,6 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo "Criando o arquivo para o CodePipeline atualizar o ECS..."
-      # O nome "hello-world-container" deve ser idêntico ao que definimos no main.tf do Terraform
       - printf '[{"name":"hello-world-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
